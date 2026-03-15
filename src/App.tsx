@@ -40,13 +40,6 @@ export class App extends React.Component<{}, State> {
     document.addEventListener('click', this.handleLeftClick);
   }
 
-  componentDidUpdate(_prevProps: Readonly<{}>, prevState: Readonly<State>) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `Renamed from ${prevState.clockName} to ${this.state.clockName}`,
-    );
-  }
-
   componentWillUnmount() {
     window.clearInterval(this.nameTimerId);
     document.removeEventListener('contextmenu', this.handleRightClick);

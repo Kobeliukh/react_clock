@@ -1,20 +1,43 @@
 import './Clock.scss';
 import React from 'react';
 
+function getFormattedDate(date: Date): string {
+  return date.toUTCString().slice(-12, -4);
+}
+
 interface Props {
   name: string;
 }
 
-export class Clock extends React.Component<Props, {}> {
-  today = new Date();
+interface State {
+  currentTime: string;
+}
+
+export class Clock extends React.Component<Props, State> {
+  state: Readonly<State> = {
+    currentTime: getFormattedDate(new Date()),
+  };
 
   tickTimerId = 0;
 
   componentDidMount() {
     this.tickTimerId = window.setInterval(() => {
+      const newDate = getFormattedDate(new Date());
+
+      this.setState({ currentTime: newDate });
+
       // eslint-disable-next-line no-console
-      console.log(new Date().toUTCString().slice(-12, -4));
+      console.log(newDate);
     }, 1000);
+  }
+
+  componentDidUpdate(prevProps: Readonly<Props>) {
+    if (prevProps.name === this.props.name) {
+      return;
+    }
+
+    // eslint-disable-next-line no-console
+    console.warn(`Renamed from ${prevProps.name} to ${this.props.name}`);
   }
 
   componentWillUnmount() {
@@ -23,6 +46,7 @@ export class Clock extends React.Component<Props, {}> {
 
   render() {
     const { name } = this.props;
+    const { currentTime } = this.state;
 
     return (
       <div className="Clock">
@@ -30,9 +54,7 @@ export class Clock extends React.Component<Props, {}> {
 
         {' time is '}
 
-        <span className="Clock__time">
-          {this.today.toUTCString().slice(-12, -4)}
-        </span>
+        <span className="Clock__time">{currentTime}</span>
       </div>
     );
   }
